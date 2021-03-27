@@ -11,6 +11,8 @@ public class Testing123 : MonoBehaviour
     public static float rollres;     // rolling resistance
     public static float topspeed;    // top speed
     public static float topacc;      // top acceleration
+    public static float circledia;   // movement diameter
+    public static float trackloc;    // track distance around circle?
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +23,9 @@ public class Testing123 : MonoBehaviour
         rollres = 600.0f;
         topspeed = 1000.0f;
         topacc = 500.0f;
+
+        circledia = 300.0f;
+        trackloc = 0.0f;
     }
 
     // Update is called once per frame
@@ -49,10 +54,16 @@ public class Testing123 : MonoBehaviour
         trackspeed = trackspeed + (trackacc * 20.0f * Time.deltaTime);    // apply acceleration
         if (trackspeed > topspeed) { trackspeed = topspeed; }               // limit top speed
 
-        transform.Translate(trackspeed * Time.deltaTime, 0, 0);          // move car
+        trackloc = trackloc + (trackspeed * Time.deltaTime);
+        if (trackloc > 3600.0f) { trackloc = trackloc - 3600.0f; }
+        transform.position = new Vector2(Mathf.Sin(trackloc / 10.0f * Mathf.Deg2Rad) * circledia, -Mathf.Cos(trackloc / 10.0f * Mathf.Deg2Rad) * circledia);
+
+        transform.rotation = Quaternion.Euler(0, 0, trackloc / 10.0f);
+        //transform.Translate(trackspeed * Time.deltaTime, 0, 0);          // move car
     }
     private void OnGUI()
     {
         GUI.Box(new Rect(10, 10, 240, 40), "throttle:" + throttle + " trackacc:" + trackacc);
         GUI.Box(new Rect(10, 40, 240, 40), "trackspeed:" + trackspeed);
     }
+}
